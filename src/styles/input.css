@@ -1,7 +1,11 @@
-input {
+input:not([type='checkbox']):not([type='radio']):not([type='file']) {
   height: var(--min-tap-size);
   width: var(--input-width-default);
   padding-inline: var(--input-padding-inline-default);
+}
+
+.input-label {
+  line-height: var(--min-tap-size);
 }
 
 .input-with-icons {
@@ -50,4 +54,11 @@ input {
   &:has(.icon-right) input {
     padding-right: var(--input-placeholder-padding);
   }
+}
+
+.input-error-message {
+  min-height: 2em;
+  line-height: 2em;
+  font-size: small;
+  color: var(--input-error)
 }

@@ -1,8 +1,8 @@
 import { useAppSelector } from '@hooks';
 import { getCountries } from '@store';
 
-export const ControlledFormPage = () => {
+export const UncontrolledFormPage = () => {
   const countries = useAppSelector((state) => getCountries(state));
 
-  return <div>ControlledFormPage {countries.length}</div>;
+  return <div>UncontrolledFormPage {countries.length}</div>;
 };

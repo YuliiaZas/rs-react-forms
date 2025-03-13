@@ -9,23 +9,23 @@ import './App.css';
 function App() {
   return (
     <Provider store={store}>
-      <header>
+      <div className="theme-dark app-wrapper">
         <Header />
-      </header>
-      <main>
-        <Routes>
-          <Route path={PATH_VALUE.HOME} element={<HomePage />}>
-            <Route
-              path={PATH_VALUE.UNCONTROLLED}
-              element={<UncontrolledFormPage />}
-            />
-            <Route
-              path={PATH_VALUE.CONTROLLED}
-              element={<ControlledFormPage />}
-            />
-          </Route>
-        </Routes>
-      </main>
+        <main>
+          <Routes>
+            <Route path={PATH_VALUE.HOME} element={<HomePage />}>
+              <Route
+                path={PATH_VALUE.UNCONTROLLED}
+                element={<UncontrolledFormPage />}
+              />
+              <Route
+                path={PATH_VALUE.CONTROLLED}
+                element={<ControlledFormPage />}
+              />
+            </Route>
+          </Routes>
+        </main>
+      </div>
     </Provider>
   );
 }

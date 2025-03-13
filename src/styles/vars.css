@@ -27,6 +27,7 @@
     --state-active-bc: var(--theme-color);
     --spinner-bg: #5d5151db;
     --spinner-c: #ffffff;
+    --input-error: var(--input-bc-hover);
   }
 
   &:has(.theme-light) {
@@ -48,5 +49,6 @@
     --state-active-bc: var(--theme-color);
     --spinner-bg: #7c8990d9;
     --spinner-c: #ffffff;
+    --input-error: var(--input-bc-hover);
   }
 }
