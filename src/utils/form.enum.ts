@@ -17,10 +17,10 @@ export enum FORM_FIELD1 {
   EMAIL = 'email',
   PASSWORD = 'password',
   CONFIRM_PASSWORD = 'confirmPassword',
-  // GENDER = 'gender',
+  GENDER = 'gender',
   AGREEMENT = 'agreement',
   // FILE = 'file',
-  // COUNTRY = 'country',
+  COUNTRY = 'country',
 }
 
 export enum TABLE_LABEL {
@@ -49,7 +49,7 @@ export type FormFieldData = {
   type: string;
   label: string;
   placeholder?: string;
-  options?: string[];
+  options?: OptionItem[];
   accept?: string;
 };
 
@@ -82,9 +82,10 @@ export const formFieldMap: FormFieldMap = {
     placeholder: 'Confirm your password',
   },
   [FORM_FIELD.GENDER]: {
-    type: 'radio',
+    type: 'select',
     label: getLabel(FORM_FIELD.GENDER),
-    options: ['Male', 'Female', 'Other'],
+    placeholder: 'Select your gender',
+    options: [{ value: 'Male' }, { value: 'Female' }, { value: 'Other' }],
   },
   [FORM_FIELD.AGREEMENT]: {
     type: 'checkbox',
@@ -96,9 +97,9 @@ export const formFieldMap: FormFieldMap = {
     accept: 'image/png, image/jpeg',
   },
   [FORM_FIELD.COUNTRY]: {
-    type: 'select',
+    type: 'text',
     label: getLabel(FORM_FIELD.COUNTRY),
-    options: ['India', 'USA', 'UK', 'Canada'],
+    options: [{ value: 'Canada' }, { value: 'Croatia' }, { value: 'Ukraine' }],
   },
 };
 
@@ -115,6 +116,13 @@ export type AppForm = {
   agreement: boolean;
   country: string;
 };
+
+export type OptionItem = {
+  value: string;
+  label?: string;
+};
+
+export type UserInfo = Partial<AppForm>;
 
 export const formSchema: ObjectSchema<AppForm> = object({
   [FORM_FIELD.NAME]: string().required(getRequiredMessage(FORM_FIELD.NAME)), //validate for first uppercased letter

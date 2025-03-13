@@ -49,16 +49,6 @@ export const FormFieldWrapper = ({
     </div>
   );
 };
-// {/* {label && (
-//   <label htmlFor={id} className={required ? 'required' : ''}>
-//     {label}
-//   </label>
-// )} */}
-// {/* <span
-//   className={`input-error-message ${touched && error ? '' : 'empty'}`}
-// >
-//   {error?.message}
-// </span> */}
 
 export const getChildId = (children: FormFieldWrapperProps['children']) => {
   const child = React.Children.only(children);

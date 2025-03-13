@@ -7,19 +7,23 @@ import {
 import { FormFieldWrapper } from '@lib';
 import { AppForm, FormFieldData } from '@utils';
 
-export const FormField = ({
-  name,
-  fieldData,
-  register,
-  errors,
-  touched,
-}: {
+type FormFieldProps = {
   name: keyof AppForm;
   fieldData: FormFieldData;
+  dataset?: FormFieldData['options'];
   register: UseFormRegister<AppForm>;
   errors: FieldErrors<AppForm>;
   touched: FormState<AppForm>['touchedFields'];
-}) => {
+};
+
+export const FormField = ({
+  name,
+  fieldData,
+  dataset,
+  register,
+  errors,
+  touched,
+}: FormFieldProps) => {
   const inputRegister: UseFormRegisterReturn = register(name);
   switch (fieldData.type) {
     case 'text':
@@ -28,6 +32,32 @@ export const FormField = ({
     case 'email':
     case 'checkbox':
     case 'file':
+      if (fieldData.type === 'text' && (dataset || fieldData.options)) {
+        return (
+          <>
+            <datalist id={`${name}-datalist`}>
+              {(dataset || fieldData.options || []).map(({ value, label }) => (
+                <option key={value} value={value} label={label ?? value} />
+              ))}
+            </datalist>
+            <FormFieldWrapper
+              label={fieldData.label}
+              name={name}
+              required={inputRegister.required}
+              error={errors[name]}
+              touched={touched[name]}
+            >
+              <input
+                {...inputRegister}
+                type={fieldData.type}
+                id={name}
+                list={`${name}-datalist`}
+                autoComplete="nope"
+              />
+            </FormFieldWrapper>
+          </>
+        );
+      }
       return (
         <FormFieldWrapper
           label={fieldData.label}
@@ -42,12 +72,12 @@ export const FormField = ({
             type={fieldData.type}
             id={name}
             placeholder={fieldData.placeholder}
-            autoComplete={'off'}
+            autoComplete="nope"
             accept={fieldData.accept}
           />
         </FormFieldWrapper>
       );
-    case 'radio':
+    case 'select':
       return (
         <FormFieldWrapper
           label={fieldData.label}
@@ -56,12 +86,16 @@ export const FormField = ({
           error={errors[name]}
           touched={touched[name]}
         >
-          <input
-            {...inputRegister}
-            type={fieldData.type}
-            id={name}
-            autoComplete={'off'}
-          />
+          <select {...inputRegister} id={name} defaultValue={''}>
+            {fieldData.placeholder && (
+              <option value="" disabled>
+                {fieldData.placeholder}
+              </option>
+            )}
+            {(fieldData.options || []).map(({ value, label }) => (
+              <option key={value} value={value} label={label ?? value} />
+            ))}
+          </select>
         </FormFieldWrapper>
       );
     default:

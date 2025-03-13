@@ -1,25 +1,38 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from './store';
+import { UserInfo } from '@utils';
 
 interface UserInfoState {
-  controlledForm: object;
-  uncontrolledForm: object;
+  controlledForms: UserInfo[];
+  uncontrolledForms: UserInfo[];
 }
 
 const initialState: UserInfoState = {
-  controlledForm: {},
-  uncontrolledForm: {},
+  controlledForms: [],
+  uncontrolledForms: [],
 };
 
 const userInfoSlice = createSlice({
   name: 'userInfo',
   initialState,
   reducers: {
-    setControlledForm: (state, { payload }: PayloadAction<object>) => {
-      state.controlledForm = payload;
+    setControlledForm: (
+      state,
+      {
+        payload: { id, formData },
+      }: PayloadAction<{ id?: number; formData: UserInfo }>
+    ) => {
+      const formId = id || state.controlledForms.length;
+      state.controlledForms[formId] = formData;
     },
-    setUncontrolledForm: (state, { payload }: PayloadAction<object>) => {
-      state.uncontrolledForm = payload;
+    setUncontrolledForm: (
+      state,
+      {
+        payload: { id, formData },
+      }: PayloadAction<{ id?: number; formData: UserInfo }>
+    ) => {
+      const formId = id || state.uncontrolledForms.length;
+      state.uncontrolledForms[formId] = formData;
     },
   },
 });
@@ -28,7 +41,12 @@ export const { setControlledForm, setUncontrolledForm } = userInfoSlice.actions;
 
 export default userInfoSlice.reducer;
 
-export const getControlledForm = (state: RootState) =>
-  state.userInfo.controlledForm;
-export const getUncontrolledForm = (state: RootState) =>
-  state.userInfo.uncontrolledForm;
+export const getControlledForms = (state: RootState) =>
+  state.userInfo.controlledForms;
+export const getControlledForm = (state: RootState, id: number) =>
+  state.userInfo.controlledForms[id];
+
+export const getUncontrolledForms = (state: RootState) =>
+  state.userInfo.uncontrolledForms;
+export const getUncontrolledForm = (state: RootState, id: number) =>
+  state.userInfo.uncontrolledForms[id];
