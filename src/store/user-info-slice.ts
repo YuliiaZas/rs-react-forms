@@ -1,6 +1,18 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from './store';
-import { UserInfo } from '@utils';
+import { AppForm, UserInfo } from '@utils';
+
+const emptyForm: AppForm = {
+  name: '',
+  age: undefined,
+  email: '',
+  password: '',
+  confirmPassword: '',
+  gender: '',
+  agreement: false,
+  file: '',
+  country: '',
+};
 
 interface UserInfoState {
   controlledForms: UserInfo[];
@@ -43,10 +55,18 @@ export default userInfoSlice.reducer;
 
 export const getControlledForms = (state: RootState) =>
   state.userInfo.controlledForms;
-export const getControlledForm = (state: RootState, id: number) =>
-  state.userInfo.controlledForms[id];
+export const getControlledForm = (state: RootState, id?: number) => {
+  if (id === undefined) {
+    return emptyForm;
+  }
+  return state.userInfo.controlledForms[id];
+};
 
 export const getUncontrolledForms = (state: RootState) =>
   state.userInfo.uncontrolledForms;
-export const getUncontrolledForm = (state: RootState, id: number) =>
-  state.userInfo.uncontrolledForms[id];
+export const getUncontrolledForm = (state: RootState, id?: number) => {
+  if (id === undefined) {
+    return emptyForm;
+  }
+  return state.userInfo.uncontrolledForms[id];
+};

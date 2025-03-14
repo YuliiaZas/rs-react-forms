@@ -1,5 +1,4 @@
 @import url('./styles/vars.css');
-@import url('./styles/icons.css');
 @import url('./styles/input.css');
 @import url('./styles/button.css');
 @import url('./styles/app.css');
@@ -67,9 +66,14 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: var(--button-bg);
+  background-color: var(--state-pending-bc);
   color: var(--default-color);
   cursor: pointer;
+
+  &:disabled {
+    cursor: not-allowed;
+    filter: grayscale(1);
+  }
 
   &:hover,
   &:focus,
@@ -87,6 +91,16 @@ select {
   &:focus,
   &:focus-visible {
     border-color: var(--input-bc-hover);
+  }
+}
+
+input {
+  &[type='file' i]::-webkit-file-upload-button {
+    height: var(--min-tap-size);
+    background-color: var(--state-pending-bc);
+    color: inherit;
+    border: none;
+    cursor: pointer;
   }
 }
 

@@ -13,6 +13,7 @@
       "@layouts": ["layouts/index.ts"],
       "@lib": ["lib/index.ts"],
       "@pages": ["pages/index.ts"],
+      "@services": ["services/index.ts"],
       "@store": ["store/index.ts"],
       "@utils": ["utils/index.ts"],
     },

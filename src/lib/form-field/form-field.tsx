@@ -1,19 +1,22 @@
 import {
   FieldErrors,
-  FormState,
   UseFormRegister,
   UseFormRegisterReturn,
+  UseFormTrigger,
 } from 'react-hook-form';
 import { FormFieldWrapper } from '@lib';
 import { AppForm, FormFieldData } from '@utils';
+import { useState } from 'react';
 
 type FormFieldProps = {
   name: keyof AppForm;
   fieldData: FormFieldData;
   dataset?: FormFieldData['options'];
   register: UseFormRegister<AppForm>;
+  trigger: UseFormTrigger<AppForm>;
   errors: FieldErrors<AppForm>;
-  touched: FormState<AppForm>['touchedFields'];
+  touched: Partial<Record<keyof AppForm, boolean>>;
+  defaultValue: AppForm[keyof AppForm];
 };
 
 export const FormField = ({
@@ -21,17 +24,26 @@ export const FormField = ({
   fieldData,
   dataset,
   register,
+  trigger,
   errors,
   touched,
+  defaultValue,
 }: FormFieldProps) => {
   const inputRegister: UseFormRegisterReturn = register(name);
+  const [currentType, setCurrentType] = useState(fieldData.type);
+
+  const switchInputType = () => {
+    console.log(touched);
+    setCurrentType(isTypeText() ? fieldData.type : 'text');
+  };
+
+  const isTypeText = () => currentType === 'text';
+
   switch (fieldData.type) {
     case 'text':
-    case 'password':
     case 'number':
     case 'email':
     case 'checkbox':
-    case 'file':
       if (fieldData.type === 'text' && (dataset || fieldData.options)) {
         return (
           <>
@@ -42,17 +54,19 @@ export const FormField = ({
             </datalist>
             <FormFieldWrapper
               label={fieldData.label}
-              name={name}
-              required={inputRegister.required}
+              required={fieldData.required}
               error={errors[name]}
               touched={touched[name]}
+              inputTitle={fieldData.title}
             >
               <input
                 {...inputRegister}
                 type={fieldData.type}
                 id={name}
                 list={`${name}-datalist`}
+                defaultValue={defaultValue as string}
                 autoComplete="nope"
+                onBlur={() => trigger(name)}
               />
             </FormFieldWrapper>
           </>
@@ -61,32 +75,89 @@ export const FormField = ({
       return (
         <FormFieldWrapper
           label={fieldData.label}
-          name={name}
-          required={inputRegister.required}
+          required={fieldData.required}
           error={errors[name]}
           touched={touched[name]}
+          inputTitle={fieldData.title}
           inputBeforeLabel={fieldData.type === 'checkbox'}
         >
           <input
             {...inputRegister}
             type={fieldData.type}
             id={name}
+            defaultValue={defaultValue as string}
             placeholder={fieldData.placeholder}
             autoComplete="nope"
-            accept={fieldData.accept}
+            onBlur={() => trigger(name)}
           />
+        </FormFieldWrapper>
+      );
+    case 'file':
+      return (
+        <FormFieldWrapper
+          label={fieldData.label}
+          required={fieldData.required}
+          error={errors[name]}
+          touched={touched[name]}
+          inputTitle={fieldData.title}
+        >
+          <input
+            {...inputRegister}
+            type={fieldData.type}
+            id={name}
+            defaultValue={defaultValue as string}
+            placeholder={fieldData.placeholder}
+            autoComplete="nope"
+            accept={fieldData.accept?.join(',')}
+            onBlur={() => trigger(name)}
+          />
+        </FormFieldWrapper>
+      );
+    case 'password':
+      return (
+        <FormFieldWrapper
+          label={fieldData.label}
+          required={fieldData.required}
+          error={errors[name]}
+          touched={touched[name]}
+          inputTitle={fieldData.title}
+        >
+          <div className={`input-with-icons`}>
+            <input
+              {...inputRegister}
+              type={currentType}
+              id={name}
+              defaultValue={defaultValue as string}
+              placeholder={fieldData.placeholder}
+              autoComplete="nope"
+              onBlur={() => {
+                trigger(name);
+              }}
+            />
+            <span
+              className={`icon-right pointer`}
+              title="Clear"
+              onClick={() => switchInputType()}
+            >
+              {isTypeText() ? <span>&#128584;</span> : <span>&#128064;</span>}
+            </span>
+          </div>
         </FormFieldWrapper>
       );
     case 'select':
       return (
         <FormFieldWrapper
           label={fieldData.label}
-          name={name}
-          required={inputRegister.required}
+          required={fieldData.required}
           error={errors[name]}
           touched={touched[name]}
+          inputTitle={fieldData.title}
         >
-          <select {...inputRegister} id={name} defaultValue={''}>
+          <select
+            {...inputRegister}
+            id={name}
+            defaultValue={defaultValue as string}
+          >
             {fieldData.placeholder && (
               <option value="" disabled>
                 {fieldData.placeholder}

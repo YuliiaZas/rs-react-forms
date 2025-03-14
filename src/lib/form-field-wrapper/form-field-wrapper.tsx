@@ -1,3 +1,4 @@
+import { getChildInputId } from '@utils';
 import { FormFieldError } from '../form-field-error/form-field-error';
 import { FormFieldLabel } from '../form-field-label/form-field-label';
 import React from 'react';
@@ -5,24 +6,23 @@ import React from 'react';
 interface FormFieldWrapperProps {
   children: React.ReactElement<HTMLInputElement>;
   label?: string;
-  name?: string;
   required?: boolean;
   error?: { message?: string };
   touched?: boolean;
   inputBeforeLabel?: boolean;
+  inputTitle?: string;
 }
 
 export const FormFieldWrapper = ({
   children,
   label,
-  name,
   required,
   error,
   touched,
   inputBeforeLabel = false,
+  inputTitle,
 }: FormFieldWrapperProps) => {
-  console.log('FormFieldWrapper', name, children, label);
-  const id = name || getChildId(children) || '';
+  const id = getChildInputId(children);
   if (label && !id) {
     throw new Error('No id found for form field');
   }
@@ -32,7 +32,12 @@ export const FormFieldWrapper = ({
       <div className="d-flex-column align-start mb-1">
         <div>
           {children}
-          <FormFieldLabel label={label} id={id} required={required} />
+          <FormFieldLabel
+            label={label}
+            id={id}
+            required={required}
+            hint={inputTitle}
+          />
         </div>
         <FormFieldError touched={touched} errorMessage={error?.message} />
       </div>
@@ -41,19 +46,16 @@ export const FormFieldWrapper = ({
 
   return (
     <div className="d-flex justify-space-between align-start mb-1 gap-1">
-      <FormFieldLabel label={label} id={id} required={required} />
+      <FormFieldLabel
+        label={label}
+        id={id}
+        required={required}
+        hint={inputTitle}
+      />
       <div className="d-flex-column align-end text-end">
         {children}
         <FormFieldError touched={touched} errorMessage={error?.message} />
       </div>
     </div>
   );
-};
-
-export const getChildId = (children: FormFieldWrapperProps['children']) => {
-  const child = React.Children.only(children);
-  if (React.isValidElement(child) && 'id' in child.props) {
-    return child.props.id;
-  }
-  return null;
 };
