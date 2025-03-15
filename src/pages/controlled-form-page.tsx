@@ -42,6 +42,7 @@ export const ControlledFormPage = () => {
   });
 
   const [formDataMap, setFormDataMap] = useState<FormFieldMap>(formFieldMap);
+  const [isFileLoadError, setIsFileLoadError] = useState(false);
 
   useEffect(() => {
     setFormDataMap({
@@ -59,7 +60,19 @@ export const ControlledFormPage = () => {
   const onSubmit = async (data: AppForm) => {
     const file = data.isDefaultFile
       ? (defaultFormValue.file as string)
-      : await FileStringifier.fileToBase64((data.file as FileList)[0]);
+      : await (async () => {
+          try {
+            return await FileStringifier.fileToBase64(
+              (data.file as FileList)[0]
+            );
+          } catch (error) {
+            setIsFileLoadError(true);
+            console.error(error);
+            return null;
+          }
+        })();
+    if (!file) return;
+    setIsFileLoadError(false);
 
     dispatch(
       setForm({
@@ -95,7 +108,15 @@ export const ControlledFormPage = () => {
       })}
       <div>
         <FormFieldWrapper>
-          <button disabled={!isValid}>Save</button>
+          <div>
+            <button disabled={!isValid}>Save</button>
+            {isFileLoadError && (
+              <p>
+                There was an error while uploading your file. Please attach the
+                file one moretime
+              </p>
+            )}
+          </div>
         </FormFieldWrapper>
       </div>
     </form>
