@@ -1,10 +1,11 @@
 import { useAppDispatch, useAppSelector } from '@hooks';
 import { ErrorFormFieldUncontrolled, FormFieldWrapper } from '@lib';
 import { FileStringifier } from '@services';
-import { getCountries, getUncontrolledForm, setUncontrolledForm } from '@store';
+import { getCountries, getUncontrolledForm, setForm } from '@store';
 import {
   AppForm,
   FORM_FIELD,
+  FORM_TYPE,
   FormFieldMap,
   formFieldMap,
   formSchema,
@@ -111,13 +112,14 @@ export const UncontrolledFormPage = () => {
     setIsFileLoadError(false);
 
     dispatch(
-      setUncontrolledForm({
+      setForm({
         formValue: {
           ...data,
           file,
           isDefaultFile: true,
         },
         id: formId,
+        formType: FORM_TYPE.UNCONTROLLED,
       })
     );
     navigate(PATH_VALUE.HOME);

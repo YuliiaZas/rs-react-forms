@@ -1,3 +1,8 @@
+export enum FORM_TYPE {
+  CONTROLLED = 'controlled',
+  UNCONTROLLED = 'uncontrolled',
+}
+
 export enum FORM_FIELD {
   NAME = 'name',
   AGE = 'age',

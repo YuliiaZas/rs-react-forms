@@ -8,12 +8,14 @@ type CardsListProps = {
   title: string;
   path: PATH_VALUE;
   formsValue: UserInfo[];
+  lastSavedFormId?: number | null;
 };
 
 export const CardsList: React.FC<CardsListProps> = ({
   title,
   path,
   formsValue,
+  lastSavedFormId,
 }) => {
   const getSearchParams = (index: number): string => {
     const params = new URLSearchParams({
@@ -28,7 +30,10 @@ export const CardsList: React.FC<CardsListProps> = ({
       <ul className="list">
         {formsValue.map((formData, index) => {
           return (
-            <li className="card" key={index}>
+            <li
+              className={`card ${lastSavedFormId === index ? 'border-theme' : ''}`}
+              key={index}
+            >
               <Link to={`${path}${getSearchParams(index)}`} className="link">
                 <CardSmall userInfo={formData} />
               </Link>

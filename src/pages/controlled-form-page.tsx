@@ -4,11 +4,12 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useAppDispatch, useAppSelector } from '@hooks';
 import { FormField, FormFieldWrapper } from '@lib';
-import { getControlledForm, getCountries, setControlledForm } from '@store';
+import { getControlledForm, getCountries, setForm } from '@store';
 import { FileStringifier } from '@services';
 import {
   AppForm,
   FORM_FIELD,
+  FORM_TYPE,
   FormFieldMap,
   formFieldMap,
   formSchema,
@@ -61,13 +62,14 @@ export const ControlledFormPage = () => {
       : await FileStringifier.fileToBase64((data.file as FileList)[0]);
 
     dispatch(
-      setControlledForm({
+      setForm({
         formValue: {
           ...data,
           file,
           isDefaultFile: true,
         },
         id: formId,
+        formType: FORM_TYPE.CONTROLLED,
       })
     );
     navigate(PATH_VALUE.HOME);

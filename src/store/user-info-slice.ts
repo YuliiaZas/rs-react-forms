@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from './store';
-import { AppForm, UserInfo } from '@utils';
+import { AppForm, FORM_TYPE, UserInfo } from '@utils';
 
 const emptyForm: AppForm = {
   name: '',
@@ -17,39 +17,47 @@ const emptyForm: AppForm = {
 interface UserInfoState {
   controlledForms: UserInfo[];
   uncontrolledForms: UserInfo[];
+  lastSavedForm: {
+    type: FORM_TYPE;
+    id: number;
+  } | null;
 }
 
 const initialState: UserInfoState = {
   controlledForms: [],
   uncontrolledForms: [],
+  lastSavedForm: null,
 };
 
 const userInfoSlice = createSlice({
   name: 'userInfo',
   initialState,
   reducers: {
-    setControlledForm: (
+    setForm: (
       state,
       {
-        payload: { id, formValue },
-      }: PayloadAction<{ id: number | null; formValue: UserInfo }>
+        payload: { id, formValue, formType },
+      }: PayloadAction<{
+        id: number | null;
+        formValue: UserInfo;
+        formType: FORM_TYPE;
+      }>
     ) => {
+      const type =
+        formType === FORM_TYPE.CONTROLLED
+          ? 'controlledForms'
+          : 'uncontrolledForms';
       const formId = id !== null ? id : state.controlledForms.length;
-      state.controlledForms[formId] = formValue;
+      state[type][formId] = formValue;
+      state.lastSavedForm = { type: formType, id: formId };
     },
-    setUncontrolledForm: (
-      state,
-      {
-        payload: { id, formValue },
-      }: PayloadAction<{ id: number | null; formValue: UserInfo }>
-    ) => {
-      const formId = id !== null ? id : state.controlledForms.length;
-      state.uncontrolledForms[formId] = formValue;
+    resetLastSavedForm: (state) => {
+      state.lastSavedForm = null;
     },
   },
 });
 
-export const { setControlledForm, setUncontrolledForm } = userInfoSlice.actions;
+export const { setForm, resetLastSavedForm } = userInfoSlice.actions;
 
 export default userInfoSlice.reducer;
 
@@ -70,3 +78,6 @@ export const getUncontrolledForm = (state: RootState, id: number | null) => {
   }
   return state.userInfo.uncontrolledForms[id] ?? emptyForm;
 };
+
+export const getLastSavedForm = (state: RootState) =>
+  state.userInfo.lastSavedForm;

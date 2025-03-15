@@ -231,3 +231,7 @@ input {
   border-radius: 0.5rem;
   min-width: 350px;
 }
+
+.border-theme {
+  border-color: var(--theme-color);
+}
