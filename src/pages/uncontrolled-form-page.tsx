@@ -19,7 +19,8 @@ export const UncontrolledFormPage = () => {
   const dispatch = useAppDispatch();
 
   const [searchParams] = useSearchParams();
-  const formId = Number(searchParams.get('i')) || null;
+  const formId =
+    searchParams.get('i') === null ? null : Number(searchParams.get('i'));
 
   const countries = useAppSelector((state) => getCountries(state));
   const defaultFormValue = useAppSelector((state) =>
@@ -140,6 +141,7 @@ export const UncontrolledFormPage = () => {
         <FormFieldWrapper>
           <div>
             <button>Save</button>
+            {formId?.toString()}
             {isFileLoadError && (
               <p>
                 There was an error while uploading your file. Please attach the
