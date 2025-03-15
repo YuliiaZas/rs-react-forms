@@ -91,7 +91,6 @@ export const UncontrolledFormPage = () => {
       setErrors({});
       onSubmit(formValueValid);
     }
-    console.log(errors, formValueValid);
   };
 
   const onSubmit = async (data: AppForm) => {
