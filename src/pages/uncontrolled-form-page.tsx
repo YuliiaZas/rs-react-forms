@@ -47,9 +47,6 @@ export const UncontrolledFormPage = () => {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-
-    console.log(e);
-    console.log((e.target as HTMLFormElement)[7].value);
     const formControls = (e.target as HTMLFormElement)
       .elements as HTMLFormControlsCollection;
     const formValue = [...formControls].reduce((acc: AppForm, formControl) => {
@@ -58,13 +55,14 @@ export const UncontrolledFormPage = () => {
           formControl instanceof HTMLSelectElement) &&
         formControl.id
       ) {
-        console.log(formControl);
         return {
           ...acc,
           [formControl.id]:
             formControl.type === 'checkbox'
               ? formControl.checked
-              : formControl.value,
+              : formControl.type === 'file'
+                ? formControl.files
+                : formControl.value,
         };
       }
       return acc;
