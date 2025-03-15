@@ -1,28 +1,19 @@
 import { FC } from 'react';
-import { KeyValuePair } from '@utils';
-import styles from './card-small.module.css';
+import { formLabel, TABLE_LABEL, UserInfo } from '@utils';
 
 interface CardSmallProps {
-  cardTitle: string;
-  listOfDetails: KeyValuePair[];
+  userInfo: UserInfo;
 }
 
-export const CardSmall: FC<CardSmallProps> = ({ cardTitle, listOfDetails }) => {
+export const CardSmall: FC<CardSmallProps> = ({ userInfo }) => {
   return (
     <div>
-      <h3>{cardTitle}</h3>
-      <p className="small-card-detail">
-        {listOfDetails.map((item, i, arr) => {
-          return (
-            <span className="small-card-detail" key={item.key}>
-              <span className="small-card-detail-key">{item.key}: </span>
-              <span className={styles.value}>{item.value}</span>
-              {i !== arr.length - 1 && '; '}
-            </span>
-          );
-        })}
-        .
-      </p>
+      {Object.values(TABLE_LABEL).map((label) => (
+        <div className="d-flex" key={label}>
+          <span>{formLabel[label]}</span>
+          <span>{userInfo[label]}</span>
+        </div>
+      ))}
     </div>
   );
 };

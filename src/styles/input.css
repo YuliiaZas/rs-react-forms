@@ -76,3 +76,23 @@ select {
   line-height: initial;
   text-align: center;
 }
+
+.file-uploaded{
+  position: relative;
+
+  .file-uploaded-info{
+    position: absolute;
+    right: 0;
+    width: 210px;
+    text-align: start;
+    height: 44px;
+    background-color: var(--button-bg);
+    line-height: 3;
+    display: initial;
+  }
+}
+
+.file-uploaded-info{
+  display: none;
+}
+

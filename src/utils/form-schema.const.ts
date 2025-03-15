@@ -13,6 +13,7 @@ export type AppForm = {
   agreement: boolean;
   file?: FileList | string;
   country: string;
+  isDefaultFile?: boolean;
 };
 
 const validateFileSize = (value?: FileList | string): boolean => {
@@ -32,7 +33,7 @@ const validateFileType = (
 
 export const formSchema: ObjectSchema<AppForm> = object({
   [FORM_FIELD.NAME]: string()
-    .required(getRequiredMessage(FORM_FIELD.EMAIL))
+    .required(getRequiredMessage(FORM_FIELD.NAME))
     .matches(/^[A-Z]/, 'First name must start with an uppercase letter'),
   [FORM_FIELD.AGE]: number()
     .required(getRequiredMessage(FORM_FIELD.AGE))
@@ -55,16 +56,22 @@ export const formSchema: ObjectSchema<AppForm> = object({
     .required(getRequiredMessage(FORM_FIELD.CONFIRM_PASSWORD))
     .oneOf([ref(FORM_FIELD.PASSWORD), ''], 'Passwords must match'),
   [FORM_FIELD.GENDER]: string().required(getRequiredMessage(FORM_FIELD.GENDER)),
-  [FORM_FIELD.FILE]: mixed<FileList | string>()
-    .transform((value) => (value.length ? value : undefined))
-    .required(getRequiredMessage(FORM_FIELD.FILE))
-    .test('fileSize', 'File size must be less than 1MB', (value) =>
-      validateFileSize(value)
-    )
-    .test('fileType', 'File type must be JPEG or PNG', (value) =>
-      validateFileType(formFieldMap[FORM_FIELD.FILE].accept!, value)
-    ),
+  isDefaultFile: boolean().default(false),
+  [FORM_FIELD.FILE]: mixed<FileList | string>().when('isDefaultFile', {
+    is: true,
+    otherwise: (schema) =>
+      schema
+        .transform((value) => (value.length ? value : undefined))
+        .required(getRequiredMessage(FORM_FIELD.FILE))
+        .test('fileSize', 'File size must be less than 1MB', (value) =>
+          validateFileSize(value)
+        )
+        .test('fileType', 'File type must be JPEG or PNG', (value) =>
+          validateFileType(formFieldMap[FORM_FIELD.FILE].accept!, value)
+        ),
+  }),
   [FORM_FIELD.AGREEMENT]: boolean()
+    .transform((value) => (value ? value : undefined))
     .default(false)
     .oneOf([true], 'You must accept the terms and conditions'),
   [FORM_FIELD.COUNTRY]: string().required(

@@ -10,12 +10,21 @@ import {
   FormFieldMap,
   formFieldMap,
   formSchema,
+  PATH_VALUE,
   UserInfo,
 } from '@utils';
 import { FileStringifier } from '@services';
+import { useNavigate, useSearchParams } from 'react-router';
 
 export const ControlledFormPage = () => {
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const countries = useAppSelector((state) => getCountries(state));
+  const formValue = useAppSelector((state) =>
+    getControlledForm(state, Number(searchParams.get('i')))
+  );
+  console.log(formValue);
 
   const fields = Object.values(FORM_FIELD);
 
@@ -24,12 +33,10 @@ export const ControlledFormPage = () => {
     handleSubmit,
     formState: { errors, touchedFields, isValid },
     trigger,
+    setValue,
   } = useForm({
     resolver: yupResolver(formSchema),
   });
-
-  const countries = useAppSelector((state) => getCountries(state));
-  const formValue = useAppSelector((state) => getControlledForm(state));
 
   const [formData, setFormData] = useState<FormFieldMap>(formFieldMap);
 
@@ -48,7 +55,15 @@ export const ControlledFormPage = () => {
 
   const onSubmit = async (data: AppForm) => {
     if (data.file === 'string') {
-      dispatch(setControlledForm({ formData: data as UserInfo }));
+      dispatch(
+        setControlledForm({
+          formData: {
+            ...(data as UserInfo),
+            isDefaultFile: true,
+          },
+        })
+      );
+      navigate(PATH_VALUE.HOME);
     } else {
       const file = await FileStringifier.fileToBase64(
         (data.file as FileList)[0]
@@ -58,9 +73,11 @@ export const ControlledFormPage = () => {
           formData: {
             ...data,
             file,
+            isDefaultFile: true,
           },
         })
       );
+      navigate(PATH_VALUE.HOME);
     }
   };
 
@@ -77,6 +94,7 @@ export const ControlledFormPage = () => {
             errors={errors}
             touched={touchedFields}
             trigger={trigger}
+            setValue={setValue}
             key={fieldName}
           />
         );

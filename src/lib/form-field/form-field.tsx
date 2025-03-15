@@ -2,6 +2,7 @@ import {
   FieldErrors,
   UseFormRegister,
   UseFormRegisterReturn,
+  UseFormSetValue,
   UseFormTrigger,
 } from 'react-hook-form';
 import { FormFieldWrapper } from '@lib';
@@ -14,6 +15,7 @@ type FormFieldProps = {
   dataset?: FormFieldData['options'];
   register: UseFormRegister<AppForm>;
   trigger: UseFormTrigger<AppForm>;
+  setValue: UseFormSetValue<AppForm>;
   errors: FieldErrors<AppForm>;
   touched: Partial<Record<keyof AppForm, boolean>>;
   defaultValue: AppForm[keyof AppForm];
@@ -25,12 +27,16 @@ export const FormField = ({
   dataset,
   register,
   trigger,
+  setValue,
   errors,
   touched,
   defaultValue,
 }: FormFieldProps) => {
   const inputRegister: UseFormRegisterReturn = register(name);
   const [currentType, setCurrentType] = useState(fieldData.type);
+  const [showDefaultFile, setShowDefaultFile] = useState(
+    fieldData.type === 'file' && !!defaultValue
+  );
 
   const switchInputType = () => {
     console.log(touched);
@@ -43,7 +49,6 @@ export const FormField = ({
     case 'text':
     case 'number':
     case 'email':
-    case 'checkbox':
       if (fieldData.type === 'text' && (dataset || fieldData.options)) {
         return (
           <>
@@ -79,13 +84,33 @@ export const FormField = ({
           error={errors[name]}
           touched={touched[name]}
           inputTitle={fieldData.title}
-          inputBeforeLabel={fieldData.type === 'checkbox'}
         >
           <input
             {...inputRegister}
             type={fieldData.type}
             id={name}
             defaultValue={defaultValue as string}
+            placeholder={fieldData.placeholder}
+            autoComplete="nope"
+            onBlur={() => trigger(name)}
+          />
+        </FormFieldWrapper>
+      );
+    case 'checkbox':
+      return (
+        <FormFieldWrapper
+          label={fieldData.label}
+          required={fieldData.required}
+          error={errors[name]}
+          touched={touched[name]}
+          inputTitle={fieldData.title}
+          inputBeforeLabel={true}
+        >
+          <input
+            {...inputRegister}
+            type={fieldData.type}
+            id={name}
+            defaultChecked={defaultValue as boolean}
             placeholder={fieldData.placeholder}
             autoComplete="nope"
             onBlur={() => trigger(name)}
@@ -101,16 +126,29 @@ export const FormField = ({
           touched={touched[name]}
           inputTitle={fieldData.title}
         >
-          <input
-            {...inputRegister}
-            type={fieldData.type}
-            id={name}
-            defaultValue={defaultValue as string}
-            placeholder={fieldData.placeholder}
-            autoComplete="nope"
-            accept={fieldData.accept?.join(',')}
-            onBlur={() => trigger(name)}
-          />
+          <div className={showDefaultFile ? 'file-uploaded' : ''}>
+            <input
+              {...inputRegister}
+              type={fieldData.type}
+              id={name}
+              placeholder={fieldData.placeholder}
+              autoComplete="nope"
+              accept={fieldData.accept?.join(',')}
+              onBlur={() => {
+                console.log(name, 'onBlur');
+                trigger(name);
+                setValue('isDefaultFile', false);
+                setShowDefaultFile(false);
+              }}
+            />
+            <input
+              type="checkbox"
+              className="d-none"
+              {...register('isDefaultFile')}
+              defaultChecked={!!defaultValue}
+            />
+            <span className="file-uploaded-info">File is uploaded</span>
+          </div>
         </FormFieldWrapper>
       );
     case 'password':

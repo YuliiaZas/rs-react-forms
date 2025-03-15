@@ -1,5 +1,5 @@
 import { PATH_VALUE } from '@utils';
-import { NavLink } from 'react-router';
+import { NavLink, useLocation, useSearchParams } from 'react-router';
 import style from './header.module.css';
 
 export const Header = () => {
@@ -8,6 +8,9 @@ export const Header = () => {
     [PATH_VALUE.UNCONTROLLED]: 'Uncontrolled Form',
     [PATH_VALUE.CONTROLLED]: 'Controlled Form',
   };
+  const [searchParams] = useSearchParams();
+  const location = useLocation();
+  console.log(location.pathname, location.search, searchParams.toString());
 
   return (
     <header className="mb-3">

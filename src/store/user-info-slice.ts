@@ -55,18 +55,18 @@ export default userInfoSlice.reducer;
 
 export const getControlledForms = (state: RootState) =>
   state.userInfo.controlledForms;
-export const getControlledForm = (state: RootState, id?: number) => {
-  if (id === undefined) {
+export const getControlledForm = (state: RootState, id: number | null) => {
+  if (id === null) {
     return emptyForm;
   }
-  return state.userInfo.controlledForms[id];
+  return state.userInfo.controlledForms[id] ?? emptyForm;
 };
 
 export const getUncontrolledForms = (state: RootState) =>
   state.userInfo.uncontrolledForms;
-export const getUncontrolledForm = (state: RootState, id?: number) => {
-  if (id === undefined) {
+export const getUncontrolledForm = (state: RootState, id: number | null) => {
+  if (id === null) {
     return emptyForm;
   }
-  return state.userInfo.uncontrolledForms[id];
+  return state.userInfo.uncontrolledForms[id] ?? emptyForm;
 };
