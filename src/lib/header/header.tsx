@@ -8,9 +8,14 @@ export const Header = () => {
     [PATH_VALUE.UNCONTROLLED]: 'Uncontrolled Form',
     [PATH_VALUE.CONTROLLED]: 'Controlled Form',
   };
+
+  const state = {
+    add: 'Add ',
+    edit: 'Edit ',
+  };
+
   const [searchParams] = useSearchParams();
   const location = useLocation();
-  console.log(location.pathname, location.search, searchParams.toString());
 
   return (
     <header className="mb-3">
@@ -24,7 +29,11 @@ export const Header = () => {
                   `${style.link} ${isActive ? style.active : ''}`
                 }
               >
-                {title[path]}
+                {path === PATH_VALUE.HOME
+                  ? title[path]
+                  : location.pathname === path && searchParams.get('i')
+                    ? state.edit + title[path]
+                    : state.add + title[path]}
               </NavLink>
             </li>
           ))}

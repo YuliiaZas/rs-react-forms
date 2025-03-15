@@ -31,20 +31,20 @@ const userInfoSlice = createSlice({
     setControlledForm: (
       state,
       {
-        payload: { id, formData },
-      }: PayloadAction<{ id?: number; formData: UserInfo }>
+        payload: { id, formValue },
+      }: PayloadAction<{ id: number | null; formValue: UserInfo }>
     ) => {
-      const formId = id || state.controlledForms.length;
-      state.controlledForms[formId] = formData;
+      const formId = id !== null ? id : state.controlledForms.length;
+      state.controlledForms[formId] = formValue;
     },
     setUncontrolledForm: (
       state,
       {
-        payload: { id, formData },
-      }: PayloadAction<{ id?: number; formData: UserInfo }>
+        payload: { id, formValue },
+      }: PayloadAction<{ id: number | null; formValue: UserInfo }>
     ) => {
-      const formId = id || state.uncontrolledForms.length;
-      state.uncontrolledForms[formId] = formData;
+      const formId = id !== null ? id : state.controlledForms.length;
+      state.uncontrolledForms[formId] = formValue;
     },
   },
 });

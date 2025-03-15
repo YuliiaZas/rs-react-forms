@@ -1,9 +1,11 @@
-import { yupResolver } from '@hookform/resolvers/yup';
 import { useEffect, useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router';
 import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { useAppDispatch, useAppSelector } from '@hooks';
 import { FormField, FormFieldWrapper } from '@lib';
 import { getControlledForm, getCountries, setControlledForm } from '@store';
+import { FileStringifier } from '@services';
 import {
   AppForm,
   FORM_FIELD,
@@ -11,20 +13,19 @@ import {
   formFieldMap,
   formSchema,
   PATH_VALUE,
-  UserInfo,
 } from '@utils';
-import { FileStringifier } from '@services';
-import { useNavigate, useSearchParams } from 'react-router';
 
 export const ControlledFormPage = () => {
-  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+
+  const [searchParams] = useSearchParams();
+  const formId = Number(searchParams.get('i')) || null;
+
   const countries = useAppSelector((state) => getCountries(state));
-  const formValue = useAppSelector((state) =>
-    getControlledForm(state, Number(searchParams.get('i')))
+  const defaultFormValue = useAppSelector((state) =>
+    getControlledForm(state, formId)
   );
-  console.log(formValue);
 
   const fields = Object.values(FORM_FIELD);
 
@@ -38,10 +39,10 @@ export const ControlledFormPage = () => {
     resolver: yupResolver(formSchema),
   });
 
-  const [formData, setFormData] = useState<FormFieldMap>(formFieldMap);
+  const [formDataMap, setFormDataMap] = useState<FormFieldMap>(formFieldMap);
 
   useEffect(() => {
-    setFormData({
+    setFormDataMap({
       ...formFieldMap,
       [FORM_FIELD.COUNTRY]: {
         ...formFieldMap.country,
@@ -54,31 +55,21 @@ export const ControlledFormPage = () => {
   }, [countries]);
 
   const onSubmit = async (data: AppForm) => {
-    if (data.file === 'string') {
-      dispatch(
-        setControlledForm({
-          formData: {
-            ...(data as UserInfo),
-            isDefaultFile: true,
-          },
-        })
-      );
-      navigate(PATH_VALUE.HOME);
-    } else {
-      const file = await FileStringifier.fileToBase64(
-        (data.file as FileList)[0]
-      );
-      dispatch(
-        setControlledForm({
-          formData: {
-            ...data,
-            file,
-            isDefaultFile: true,
-          },
-        })
-      );
-      navigate(PATH_VALUE.HOME);
-    }
+    const file = data.isDefaultFile
+      ? (defaultFormValue.file as string)
+      : await FileStringifier.fileToBase64((data.file as FileList)[0]);
+
+    dispatch(
+      setControlledForm({
+        formValue: {
+          ...data,
+          file,
+          isDefaultFile: true,
+        },
+        id: formId,
+      })
+    );
+    navigate(PATH_VALUE.HOME);
   };
 
   return (
@@ -88,8 +79,8 @@ export const ControlledFormPage = () => {
         return (
           <FormField
             name={fieldName}
-            fieldData={formData[fieldName]}
-            defaultValue={formValue[fieldName]}
+            fieldData={formDataMap[fieldName]}
+            defaultValue={defaultFormValue[fieldName]}
             register={register}
             errors={errors}
             touched={touchedFields}

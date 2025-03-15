@@ -19,10 +19,11 @@
   box-sizing: border-box;
 }
 
-#__next {
+#root {
   width: 100%;
   max-width: 1280px;
   margin: 0 auto;
+  padding: 2rem;
 }
 
 .app-wrapper {
@@ -207,4 +208,26 @@ input {
 
 .invisible {
   visibility: hidden;
+}
+
+.list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.link {
+  position: relative;
+  color: inherit;
+
+  &:hover {
+    color: inherit;
+  }
+}
+
+.card {
+  margin-bottom: 3rem;
+  border: 1px solid;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  min-width: 350px;
 }
