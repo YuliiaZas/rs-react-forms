@@ -1,38 +1,24 @@
-import {
-  FieldErrors,
-  UseFormRegister,
-  UseFormRegisterReturn,
-  UseFormSetValue,
-  UseFormTrigger,
-} from 'react-hook-form';
 import { FormFieldWrapper } from '@lib';
 import { AppForm, FormFieldData } from '@utils';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
-type FormFieldProps = {
+export type ErrorFormFieldUncontrolled = Partial<Record<keyof AppForm, string>>;
+
+type FormFieldUncontrolledProps = {
   name: keyof AppForm;
   fieldData: FormFieldData;
   dataset?: FormFieldData['options'];
-  register: UseFormRegister<AppForm>;
-  trigger: UseFormTrigger<AppForm>;
-  setValue: UseFormSetValue<AppForm>;
-  errors: FieldErrors<AppForm>;
-  touched: Partial<Record<keyof AppForm, boolean>>;
+  errors: ErrorFormFieldUncontrolled;
   defaultValue: AppForm[keyof AppForm];
 };
 
-export const FormField = ({
+export const FormFieldUncontrolled = ({
   name,
   fieldData,
   dataset,
-  register,
-  trigger,
-  setValue,
   errors,
-  touched,
   defaultValue,
-}: FormFieldProps) => {
-  const inputRegister: UseFormRegisterReturn = register(name);
+}: FormFieldUncontrolledProps) => {
   const [currentType, setCurrentType] = useState(fieldData.type);
   const [showDefaultFile, setShowDefaultFile] = useState(
     fieldData.type === 'file' && !!defaultValue
@@ -42,6 +28,8 @@ export const FormField = ({
     setCurrentType(isTypeText() ? fieldData.type : 'text');
 
   const isTypeText = () => currentType === 'text';
+
+  const isDefaultFileRef = useRef<HTMLInputElement>(null);
 
   switch (fieldData.type) {
     case 'text':
@@ -59,17 +47,14 @@ export const FormField = ({
               label={fieldData.label}
               required={fieldData.required}
               error={errors[name]}
-              touched={touched[name]}
               inputTitle={fieldData.title}
             >
               <input
-                {...inputRegister}
                 type={fieldData.type}
                 id={name}
                 list={`${name}-datalist`}
                 defaultValue={defaultValue as string}
                 autoComplete="nope"
-                onBlur={() => trigger(name)}
               />
             </FormFieldWrapper>
           </>
@@ -80,17 +65,14 @@ export const FormField = ({
           label={fieldData.label}
           required={fieldData.required}
           error={errors[name]}
-          touched={touched[name]}
           inputTitle={fieldData.title}
         >
           <input
-            {...inputRegister}
             type={fieldData.type}
             id={name}
             defaultValue={defaultValue as string}
             placeholder={fieldData.placeholder}
             autoComplete="nope"
-            onBlur={() => trigger(name)}
           />
         </FormFieldWrapper>
       );
@@ -100,18 +82,15 @@ export const FormField = ({
           label={fieldData.label}
           required={fieldData.required}
           error={errors[name]}
-          touched={touched[name]}
           inputTitle={fieldData.title}
           inputBeforeLabel={true}
         >
           <input
-            {...inputRegister}
             type={fieldData.type}
             id={name}
             defaultChecked={defaultValue as boolean}
             placeholder={fieldData.placeholder}
             autoComplete="nope"
-            onBlur={() => trigger(name)}
           />
         </FormFieldWrapper>
       );
@@ -121,27 +100,28 @@ export const FormField = ({
           label={fieldData.label}
           required={fieldData.required}
           error={errors[name]}
-          touched={touched[name]}
           inputTitle={fieldData.title}
         >
           <div className={showDefaultFile ? 'file-uploaded' : ''}>
             <input
-              {...inputRegister}
               type={fieldData.type}
               id={name}
               placeholder={fieldData.placeholder}
               autoComplete="nope"
               accept={fieldData.accept?.join(',')}
               onBlur={() => {
-                trigger(name);
-                setValue('isDefaultFile', false);
+                console.log(name, 'onBlur');
                 setShowDefaultFile(false);
+                if (isDefaultFileRef.current) {
+                  isDefaultFileRef.current.value = 'false';
+                }
               }}
             />
             <input
               type="checkbox"
               className="d-none"
-              {...register('isDefaultFile')}
+              ref={isDefaultFileRef}
+              id="isDefaultFileRef"
               defaultChecked={!!defaultValue}
             />
             <span className="file-uploaded-info">File is uploaded</span>
@@ -154,18 +134,15 @@ export const FormField = ({
           label={fieldData.label}
           required={fieldData.required}
           error={errors[name]}
-          touched={touched[name]}
           inputTitle={fieldData.title}
         >
           <div className={`input-with-icons`}>
             <input
-              {...inputRegister}
               type={currentType}
               id={name}
               defaultValue={defaultValue as string}
               placeholder={fieldData.placeholder}
               autoComplete="nope"
-              onBlur={() => trigger(name)}
             />
             <span
               className={`icon-right pointer`}
@@ -183,14 +160,9 @@ export const FormField = ({
           label={fieldData.label}
           required={fieldData.required}
           error={errors[name]}
-          touched={touched[name]}
           inputTitle={fieldData.title}
         >
-          <select
-            {...inputRegister}
-            id={name}
-            defaultValue={defaultValue as string}
-          >
+          <select id={name} defaultValue={defaultValue as string}>
             {fieldData.placeholder && (
               <option value="" disabled>
                 {fieldData.placeholder}

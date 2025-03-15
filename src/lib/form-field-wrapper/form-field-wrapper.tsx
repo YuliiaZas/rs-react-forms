@@ -7,7 +7,7 @@ interface FormFieldWrapperProps {
   children: React.ReactElement<HTMLInputElement>;
   label?: string;
   required?: boolean;
-  error?: { message?: string };
+  error?: { message?: string } | string;
   touched?: boolean;
   inputBeforeLabel?: boolean;
   inputTitle?: string;
@@ -18,7 +18,7 @@ export const FormFieldWrapper = ({
   label,
   required,
   error,
-  touched,
+  touched = true,
   inputBeforeLabel = false,
   inputTitle,
 }: FormFieldWrapperProps) => {
@@ -27,7 +27,9 @@ export const FormFieldWrapper = ({
     throw new Error('No id found for form field');
   }
 
-  if (inputBeforeLabel) {
+  const errorMessage = typeof error === 'string' ? error : error?.message;
+
+  if (inputBeforeLabel || !label) {
     return (
       <div className="d-flex-column align-start mb-1">
         <div>
@@ -39,7 +41,7 @@ export const FormFieldWrapper = ({
             hint={inputTitle}
           />
         </div>
-        <FormFieldError touched={touched} errorMessage={error?.message} />
+        <FormFieldError touched={touched} errorMessage={errorMessage} />
       </div>
     );
   }
@@ -54,7 +56,7 @@ export const FormFieldWrapper = ({
       />
       <div className="d-flex-column align-end text-end">
         {children}
-        <FormFieldError touched={touched} errorMessage={error?.message} />
+        <FormFieldError touched={touched} errorMessage={errorMessage} />
       </div>
     </div>
   );
