@@ -143,7 +143,6 @@ export const UncontrolledFormPage = () => {
         <FormFieldWrapper>
           <div>
             <button>Save</button>
-            {formId?.toString()}
             {isFileLoadError && (
               <p>
                 There was an error while uploading your file. Please attach the

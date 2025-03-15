@@ -110,7 +110,6 @@ export const FormFieldUncontrolled = ({
               autoComplete="nope"
               accept={fieldData.accept?.join(',')}
               onBlur={() => {
-                console.log(name, 'onBlur');
                 setShowDefaultFile(false);
                 if (isDefaultFileRef.current) {
                   isDefaultFileRef.current.value = 'false';
