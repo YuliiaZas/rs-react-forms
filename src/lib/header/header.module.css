@@ -1,0 +1,35 @@
+.list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.link {
+  position: relative;
+  color: inherit;
+
+  &:hover {
+    color: inherit;
+  }
+
+  &::before {
+    position: absolute;
+    content: '';
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.25s linear;
+    background: linear-gradient(
+      0deg,
+      var(--theme-color-dark) -15%,
+      rgba(255, 255, 255, 0) 50%
+    );
+  }
+
+
+  &.active {
+    border-bottom: 2px solid var(--theme-color);
+  }
+
+  &:hover::before {
+    opacity: 1;
+  }
+}
