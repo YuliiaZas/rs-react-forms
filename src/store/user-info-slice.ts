@@ -47,7 +47,7 @@ const userInfoSlice = createSlice({
         formType === FORM_TYPE.CONTROLLED
           ? 'controlledForms'
           : 'uncontrolledForms';
-      const formId = id !== null ? id : state.controlledForms.length;
+      const formId = id !== null ? id : state[type].length;
       state[type][formId] = formValue;
       state.lastSavedForm = { type: formType, id: formId };
     },
