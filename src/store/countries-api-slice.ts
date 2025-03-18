@@ -1,25 +1,21 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { CountryRaw, defaultCountries } from '@utils';
+import { Country } from '@utils';
 import { setCountries } from './countries-slice';
 
 export const countriesApiSlice = createApi({
   reducerPath: '/api/countries',
   baseQuery: fetchBaseQuery({
     baseUrl:
-      'https://restcountries.com/v3.1/independent?status=true&fields=name,flag',
+      'https://restcountries.com/v3.1/independent?fields=name,flag,population,region',
   }),
   endpoints: (builder) => ({
-    fetchCountries: builder.query<CountryRaw[], void>({
+    fetchCountries: builder.query<Country[], void>({
       query: () => '',
       async onQueryStarted(_, { dispatch, queryFulfilled }) {
         let attempts = 5;
         while (attempts > 0) {
           try {
-            const data = (await queryFulfilled).data.map(({ name, flag }) => ({
-              name: name.common,
-              flag,
-            }));
-            dispatch(setCountries(data));
+            dispatch(setCountries((await queryFulfilled).data));
             return;
           } catch (error) {
             attempts -= 1;
@@ -28,7 +24,6 @@ export const countriesApiSlice = createApi({
                 `Failed to fetch countries ${attempts} times:`,
                 error
               );
-              dispatch(setCountries(defaultCountries));
             }
           }
         }

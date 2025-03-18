@@ -1,11 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit';
-import userInfoSliceReducer from './user-info-slice';
 import { countriesApiSlice } from './countries-api-slice';
 import countriesSliceReducer from './countries-slice';
 
 export const store = configureStore({
   reducer: {
-    userInfo: userInfoSliceReducer,
     countries: countriesSliceReducer,
     [countriesApiSlice.reducerPath]: countriesApiSlice.reducer,
   },

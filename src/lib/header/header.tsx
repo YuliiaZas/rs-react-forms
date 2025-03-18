@@ -1,22 +1,21 @@
-import { PATH_VALUE } from '@utils';
-import { NavLink } from 'react-router';
+import { useAppDispatch } from '@hooks';
+import { Search } from '@lib';
+import { setSearch } from '@store';
 
 export const Header = () => {
+  const dispatch = useAppDispatch();
+
+  const updateSearchValue = (searchValue: string) => {
+    dispatch(setSearch(searchValue));
+  };
+
   return (
     <header>
-      <nav>
-        <ul>
-          <li>
-            <NavLink to={PATH_VALUE.HOME}>Home</NavLink>
-          </li>
-          <li>
-            <NavLink to={PATH_VALUE.UNCONTROLLED}>Uncontrolled Form</NavLink>
-          </li>
-          <li>
-            <NavLink to={PATH_VALUE.CONTROLLED}>Controlled Form</NavLink>
-          </li>
-        </ul>
-      </nav>
+      <Search
+        initialSearchValue={''}
+        updateSearchValue={updateSearchValue}
+        placeholder={'Type a country name'}
+      />
     </header>
   );
 };
