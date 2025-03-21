@@ -7,7 +7,10 @@ import './App.css';
 function App() {
   return (
     <Provider store={store}>
-      <div className="theme-dark">
+      <div
+        className="theme-dark"
+        style={{ minHeight: '100vh', width: '760px' }}
+      >
         <Header />
         <main>
           <HomeLayout>

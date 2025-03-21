@@ -16,7 +16,7 @@ export const Search: FC<SearchProps> = ({
 
   const handleChange = (value: string) => {
     setCurrentValue(value);
-    updateSearchValue(currentValue);
+    updateSearchValue(value);
   };
 
   return (
@@ -26,7 +26,7 @@ export const Search: FC<SearchProps> = ({
           type="text"
           className="search-input"
           placeholder={placeholder}
-          value={currentValue}
+          defaultValue={currentValue ?? ''}
           onChange={(e) => handleChange(e.target.value)}
         />
         <i className="icon-search icon-left"></i>

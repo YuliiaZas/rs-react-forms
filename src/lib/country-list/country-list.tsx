@@ -17,9 +17,9 @@ export const CountryList = () => {
   return (
     <div>
       <h1>Country List</h1>
-      <ul>
+      <ul className="list">
         {contries.map((country) => (
-          <li key={country.name.common}>
+          <li className="list mb-3" key={country.name.common}>
             <CardSmall
               cardTitle={country.name.common}
               listOfDetails={getDetails(country)}

@@ -1,4 +1,4 @@
-export type KeyValuePair = {
+export type KeyValuePair<T = string> = {
   key: string;
-  value: string;
+  value: T;
 };

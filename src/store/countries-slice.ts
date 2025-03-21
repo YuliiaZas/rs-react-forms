@@ -1,11 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Country, Sort, SORT_BY, SORT_ORDER } from '@utils';
+import { Country, DEFAULT, Sort } from '@utils';
 import { RootState } from './store';
 
 interface CountriesState {
   countries: Country[];
   regions: string[];
-  region: string;
+  selectedRegionState: Record<string, boolean>;
   search: string;
   sorting: Sort;
 }
@@ -13,9 +13,9 @@ interface CountriesState {
 const initialState: CountriesState = {
   countries: [],
   regions: [],
-  region: '',
+  selectedRegionState: {},
   search: '',
-  sorting: { key: SORT_BY.DEFAULT, order: SORT_ORDER.DEFAULT },
+  sorting: { key: DEFAULT, order: DEFAULT },
 };
 
 const countriesSlice = createSlice({
@@ -27,9 +27,16 @@ const countriesSlice = createSlice({
       state.regions = Array.from(
         new Set(payload.map((country) => country.region))
       );
+      state.selectedRegionState = state.regions.reduce(
+        (acc, region) => ({ ...acc, [region]: true }),
+        {}
+      );
     },
-    setRegion: (state, { payload }: PayloadAction<string>) => {
-      state.region = payload;
+    setSelectedRegionState: (
+      state,
+      { payload }: PayloadAction<Record<string, boolean>>
+    ) => {
+      state.selectedRegionState = payload;
     },
     setSearch: (state, { payload }: PayloadAction<string>) => {
       state.search = payload;
@@ -40,13 +47,14 @@ const countriesSlice = createSlice({
   },
 });
 
-export const { setCountries, setRegion, setSearch, setSorting } =
+export const { setCountries, setSelectedRegionState, setSearch, setSorting } =
   countriesSlice.actions;
 
 export default countriesSlice.reducer;
 
 export const getCountries = (state: RootState) => state.countries.countries;
 export const getRegions = (state: RootState) => state.countries.regions;
-export const getRegion = (state: RootState) => state.countries.region;
+export const getSelectedRegionState = (state: RootState) =>
+  state.countries.selectedRegionState;
 export const getSearch = (state: RootState) => state.countries.search;
 export const getSorting = (state: RootState) => state.countries.sorting;

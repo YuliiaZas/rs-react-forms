@@ -1,3 +1,27 @@
+.card {
+  padding-inline: 2rem;
+  border-radius: var(--border-radius);
+  border: 2px solid;
+  text-align: start;
+  position: relative;
+  cursor: pointer;
+
+  &:hover {
+    border-color: var(--state-hover-outline);
+  }
+
+  &.selected {
+    border-color: var(--state-active-bc);
+
+    &:after {
+      content: '❤️';
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+    }
+  }
+}
+
 .value {
   font-weight: 600;
 }
