@@ -1,4 +1,4 @@
-import { useAppSelector } from '@hooks';
+import { useAppSelector, useLocalStorage } from '@hooks';
 import { CardSmall } from '@lib';
 import {
   getCountries,
@@ -26,6 +26,11 @@ export const CountryList = () => {
 
   const [filteredCountries, setFilteredCountries] = useState<Country[]>([]);
   const [sortedCountries, setSortedCountries] = useState<Country[]>([]);
+
+  const [likedCountries, setLikedCountries] = useLocalStorage<string[]>({
+    key: 'likedCountries',
+    defaultValue: [],
+  });
 
   useEffect(() => {
     const newFilteredCountries = contries.filter((country) => {
@@ -69,15 +74,31 @@ export const CountryList = () => {
     ];
   };
 
+  const handleCardClick = (country: Country) => {
+    const newState = getIsCountryLiked(country)
+      ? likedCountries.filter((name) => name !== country.name.common)
+      : [...likedCountries, country.name.common];
+    setLikedCountries(newState);
+  };
+
+  const getIsCountryLiked = (country: Country) => {
+    return likedCountries.includes(country.name.common);
+  };
+
   return (
     <div>
       <h1>Country List</h1>
       <ul className="list">
         {sortedCountries.map((country) => (
-          <li className="list mb-3" key={country.name.common}>
+          <li
+            className="list mb-3"
+            key={country.name.common}
+            onClick={() => handleCardClick(country)}
+          >
             <CardSmall
               cardTitle={country.name.common}
               listOfDetails={getDetails(country)}
+              isSelected={getIsCountryLiked(country)}
             />
           </li>
         ))}
