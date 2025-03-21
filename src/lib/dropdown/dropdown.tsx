@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState, useRef } from 'react';
 import { DropdownItem } from '@utils';
 import styles from './dropdown.module.css';
 
@@ -18,15 +18,11 @@ export const Dropdown = ({
   positionedRigth = false,
 }: DropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      console.log('single', styles.dropdown);
-      if (
-        isOpen &&
-        event.target instanceof Element &&
-        !event.target.closest(`.${styles.dropdown}`)
-      ) {
+      if (isOpen && !ref.current?.contains(event.target as Node)) {
         setIsOpen(false);
       }
     };
@@ -48,7 +44,7 @@ export const Dropdown = ({
   };
 
   return (
-    <div className={styles.dropdown}>
+    <div ref={ref} className={styles.dropdown}>
       <button onClick={toggleDropdown} className={styles.dropdownButton}>
         {children || 'Select'}
       </button>

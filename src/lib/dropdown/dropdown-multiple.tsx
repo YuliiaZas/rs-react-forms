@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState, useRef } from 'react';
 import { DropdownItem } from '@utils';
 import styles from './dropdown.module.css';
 
@@ -32,6 +32,7 @@ export const DropdownMultiple = ({
   const [allChecked, setAllChecked] = useState(false);
   const [isSubmitDisabled, setIsSubmitDisabled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (items.length) {
@@ -55,12 +56,7 @@ export const DropdownMultiple = ({
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      console.log('multiple', styles.dropdown);
-      if (
-        isOpen &&
-        event.target instanceof Element &&
-        !event.target.closest(`.${styles.dropdown}`)
-      ) {
+      if (isOpen && !ref.current?.contains(event.target as Node)) {
         setIsOpen(false);
         if (initialItemsState) setCurrentItemsState(initialItemsState);
       }
@@ -109,7 +105,7 @@ export const DropdownMultiple = ({
   };
 
   return (
-    <div className={styles.dropdown}>
+    <div ref={ref} className={styles.dropdown}>
       <button onClick={toggleDropdown} className={styles.dropdownButton}>
         {children || 'Select'}
       </button>
