@@ -19,7 +19,7 @@ import {
   getOrderLabel,
 } from '@utils';
 
-export const Header = () => {
+export const CountrySettings = () => {
   const allTitle = 'All';
   const dispatch = useAppDispatch();
 
@@ -58,46 +58,44 @@ export const Header = () => {
   };
 
   return (
-    <header>
-      <div className="d-flex position-relative">
-        <div className="mr-2" style={{ minWidth: '140px', textAlign: 'left' }}>
-          <DropdownMultiple
-            items={regions}
-            selectedItems={selectedRegionsState}
-            showAll={true}
-            allTitle={allTitle}
-            selectOptions={updateRegions}
-          >
+    <div className="d-flex position-relative">
+      <div className="mr-2" style={{ minWidth: '140px', textAlign: 'left' }}>
+        <DropdownMultiple
+          items={regions}
+          selectedItems={selectedRegionsState}
+          showAll={true}
+          allTitle={allTitle}
+          selectOptions={updateRegions}
+        >
+          <span>
+            <span className="mr-1">Regions:</span>
             <span>
-              <span className="mr-1">Regions:</span>
-              <span>
-                {selectedRegionsNumber === regions.length
-                  ? allTitle
-                  : selectedRegionsNumber}
-              </span>
+              {selectedRegionsNumber === regions.length
+                ? allTitle
+                : selectedRegionsNumber}
             </span>
-          </DropdownMultiple>
-        </div>
-        <Search
-          initialSearchValue={searchValue}
-          updateSearchValue={updateSearchValue}
-          placeholder={'Type a country name'}
-        />
-        <div style={{ marginLeft: 'auto' }}>
-          <Dropdown
-            items={sortingItems}
-            selectedItem={selectedSortingValue}
-            selectOption={updateSorting}
-            positionedRigth={true}
-          >
-            <span>
-              <span className="mr-1">Sort:</span>
-              <span>{selectedSorting.key}</span>{' '}
-              <span>{getOrderLabel(selectedSorting)}</span>
-            </span>
-          </Dropdown>
-        </div>
+          </span>
+        </DropdownMultiple>
       </div>
-    </header>
+      <Search
+        initialSearchValue={searchValue}
+        updateSearchValue={updateSearchValue}
+        placeholder={'Type a country name'}
+      />
+      <div style={{ marginLeft: 'auto' }}>
+        <Dropdown
+          items={sortingItems}
+          selectedItem={selectedSortingValue}
+          selectOption={updateSorting}
+          positionedRigth={true}
+        >
+          <span>
+            <span className="mr-1">Sort:</span>
+            <span>{selectedSorting.key}</span>{' '}
+            <span>{getOrderLabel(selectedSorting)}</span>
+          </span>
+        </Dropdown>
+      </div>
+    </div>
   );
 };

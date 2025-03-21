@@ -4,7 +4,7 @@ import styles from './card-small.module.css';
 
 interface CardSmallProps {
   cardTitle: string;
-  listOfDetails: KeyValuePair[];
+  listOfDetails: KeyValuePair<string>[];
   isSelected?: boolean;
 }
 

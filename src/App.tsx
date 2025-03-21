@@ -1,5 +1,5 @@
 import { Provider } from 'react-redux';
-import { CountryList, Header } from '@lib';
+import { CountryList, CountrySettings } from '@components';
 import { HomeLayout } from '@layouts';
 import { store } from '@store';
 import './App.css';
@@ -11,7 +11,9 @@ function App() {
         className="theme-dark"
         style={{ minHeight: '100vh', width: '760px' }}
       >
-        <Header />
+        <header>
+          <CountrySettings />
+        </header>
         <main>
           <HomeLayout>
             <CountryList />
