@@ -16,10 +16,12 @@ Recorded interaction: changing sorting from **default** to sorting **by Name fro
 | 2.1s         | 2.4ms           |
 
 Before optimization:
+
 ![Flame chart for sorting before optimization](src/assets/screenshots/image.png)
 ![Ranked chart for sorting before optimization](src/assets/screenshots/image1.png)
 
 After optimization:
+
 ![Flame chart for sorting after optimization](src/assets/screenshots/image2.png)
 ![Ranked chart for sorting after optimization](src/assets/screenshots/image3.png)
 
@@ -39,10 +41,12 @@ Recorded interaction: changing filtering from **default** to region **Americas**
 | 3.5s         | 0.6ms           |
 
 Before optimization:
+
 ![Flame chart for filtering before optimization](src/assets/screenshots/image4.png)
 ![Ranked chart for filtering before optimization](src/assets/screenshots/image5.png)
 
 After optimization:
+
 ![Flame chart for filtering after optimization](src/assets/screenshots/image6.png)
 ![Ranked chart for filtering after optimization](src/assets/screenshots/image7.png)
 
@@ -60,9 +64,11 @@ Recorded interaction: changing liked state for one country **from dislike to lik
 | 1.8s         | 2.8ms           |
 
 Before optimization:
+
 ![Flame chart for liking before optimization](src/assets/screenshots/image8.png)
 ![Ranked chart for liking before optimization](src/assets/screenshots/image9.png)
 
 After optimization:
+
 ![Flame chart for liking after optimization](src/assets/screenshots/image10.png)
 ![Ranked chart for liking after optimization](src/assets/screenshots/image11.png)
