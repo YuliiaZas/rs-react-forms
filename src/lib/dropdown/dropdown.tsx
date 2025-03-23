@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState, useRef } from 'react';
+import { ReactNode, useEffect, useState, useRef, useCallback } from 'react';
 import { DropdownItem } from '@utils';
 import styles from './dropdown.module.css';
 
@@ -34,14 +34,17 @@ export const Dropdown = ({
     };
   }, [isOpen]);
 
-  const handleSelectItem = (value: string) => {
-    selectOption(value);
-    setIsOpen(false);
-  };
+  const handleSelectItem = useCallback(
+    (value: string) => {
+      selectOption(value);
+      setIsOpen(false);
+    },
+    [selectOption]
+  );
 
-  const toggleDropdown = () => {
+  const toggleDropdown = useCallback(() => {
     setIsOpen(!isOpen);
-  };
+  }, [isOpen]);
 
   return (
     <div ref={ref} className={styles.dropdown}>

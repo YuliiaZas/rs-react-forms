@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState, useRef } from 'react';
+import { ReactNode, useEffect, useState, useRef, useCallback } from 'react';
 import { DropdownItem } from '@utils';
 import styles from './dropdown.module.css';
 
@@ -69,7 +69,7 @@ export const DropdownMultiple = ({
     };
   }, [initialItemsState, isOpen]);
 
-  const handleSelectAll = () => {
+  const handleSelectAll = useCallback(() => {
     const newState = items.reduce(
       (acc, item) => ({
         ...acc,
@@ -78,31 +78,34 @@ export const DropdownMultiple = ({
       {}
     );
     setCurrentItemsState(newState);
-  };
+  }, [allChecked, items]);
 
-  const handleSubmit = () => {
+  const handleSubmit = useCallback(() => {
     selectOptions(currentItemsState);
     setIsOpen(false);
-  };
+  }, [currentItemsState, selectOptions]);
 
-  const reset = () => {
+  const reset = useCallback(() => {
     if (initialItemsState) setCurrentItemsState(initialItemsState);
-  };
+  }, [initialItemsState]);
 
-  const handleSelectItem = (value: string) => {
-    const newState = {
-      ...currentItemsState,
-      [value]: !currentItemsState[value],
-    };
-    setCurrentItemsState(newState);
-    setAllChecked(false);
-    setIsSubmitDisabled(!Object.values(newState).some((value) => value));
-  };
+  const handleSelectItem = useCallback(
+    (value: string) => {
+      const newState = {
+        ...currentItemsState,
+        [value]: !currentItemsState[value],
+      };
+      setCurrentItemsState(newState);
+      setAllChecked(false);
+      setIsSubmitDisabled(!Object.values(newState).some((value) => value));
+    },
+    [currentItemsState]
+  );
 
-  const toggleDropdown = () => {
+  const toggleDropdown = useCallback(() => {
     setIsOpen(!isOpen);
     if (!isOpen) reset();
-  };
+  }, [isOpen, reset]);
 
   return (
     <div ref={ref} className={styles.dropdown}>

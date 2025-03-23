@@ -1,20 +1,13 @@
+import { CountryCard } from '@components';
 import { useAppSelector, useLocalStorage } from '@hooks';
-import { CardSmall } from '@lib';
 import {
   getCountries,
   getSearch,
   getSelectedRegionState,
   getSorting,
 } from '@store';
-import {
-  Country,
-  DEFAULT,
-  KeyValuePair,
-  Sort,
-  SORT_BY,
-  SORT_ORDER,
-} from '@utils';
-import { useEffect, useState } from 'react';
+import { Country, DEFAULT, Sort, SORT_BY, SORT_ORDER } from '@utils';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 export const CountryList = () => {
   const contries = useAppSelector((state) => getCountries(state));
@@ -34,55 +27,51 @@ export const CountryList = () => {
     defaultValue: {},
   });
 
-  useEffect(() => {
-    const newFilteredCountries = contries.filter((country) => {
+  const newFilteredCountries = useMemo(() => {
+    return contries.filter((country) => {
       return (
         selectedRegionsState[country.region] &&
         country.name.common.toLowerCase().includes(searchValue.toLowerCase())
       );
     });
-    setFilteredCountries(newFilteredCountries);
   }, [contries, selectedRegionsState, searchValue]);
 
   useEffect(() => {
-    const newSortedCountries =
-      selectedSorting.key === DEFAULT
-        ? [...filteredCountries]
-        : [...filteredCountries].sort((a, b) => {
-            const valueA =
-              selectedSorting.key === SORT_BY.NAME
-                ? a.name.common
-                : a.population;
-            const valueB =
-              selectedSorting.key === SORT_BY.NAME
-                ? b.name.common
-                : b.population;
-            if (valueA < valueB) {
-              return selectedSorting.order === SORT_ORDER.ASC ? -1 : 1;
-            }
-            if (valueA > valueB) {
-              return selectedSorting.order === SORT_ORDER.ASC ? 1 : -1;
-            }
-            return 0;
-          });
-    setSortedCountries(newSortedCountries);
+    setFilteredCountries(newFilteredCountries);
+  }, [newFilteredCountries]);
+
+  const newSortedCountries = useMemo(() => {
+    return selectedSorting.key === DEFAULT
+      ? [...filteredCountries]
+      : [...filteredCountries].sort((a, b) => {
+          const valueA =
+            selectedSorting.key === SORT_BY.NAME ? a.name.common : a.population;
+          const valueB =
+            selectedSorting.key === SORT_BY.NAME ? b.name.common : b.population;
+          if (valueA < valueB) {
+            return selectedSorting.order === SORT_ORDER.ASC ? -1 : 1;
+          }
+          if (valueA > valueB) {
+            return selectedSorting.order === SORT_ORDER.ASC ? 1 : -1;
+          }
+          return 0;
+        });
   }, [filteredCountries, selectedSorting]);
 
-  const getDetails = (country: Country): KeyValuePair[] => {
-    return [
-      { key: 'Flag', value: country.flag },
-      { key: 'Region', value: country.region },
-      { key: 'Population', value: country.population.toLocaleString() },
-    ];
-  };
+  useEffect(() => {
+    setSortedCountries(newSortedCountries);
+  }, [newSortedCountries]);
 
-  const handleCardClick = (country: Country) => {
-    const newState = {
-      ...likedCountries,
-      [country.name.common]: !likedCountries[country.name.common],
-    };
-    setLikedCountries(newState);
-  };
+  const handleCardClick = useCallback(
+    (country: Country) => {
+      const newState = {
+        ...likedCountries,
+        [country.name.common]: !likedCountries[country.name.common],
+      };
+      setLikedCountries(newState);
+    },
+    [likedCountries, setLikedCountries]
+  );
 
   return (
     <div>
@@ -94,10 +83,9 @@ export const CountryList = () => {
             key={country.name.common}
             onClick={() => handleCardClick(country)}
           >
-            <CardSmall
-              cardTitle={country.name.common}
-              listOfDetails={getDetails(country)}
-              isSelected={likedCountries[country.name.common]}
+            <CountryCard
+              country={country}
+              isLiked={likedCountries[country.name.common]}
             />
           </li>
         ))}

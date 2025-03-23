@@ -1,54 +1,68 @@
-# React + TypeScript + Vite
+# React application optimization
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+All meassures were taken for **`CountryList`** component.
 
-Currently, two official plugins are available:
+## Sorting
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Recorded interaction: changing sorting from **default** to sorting **by Name from A to Z**.
 
-## Expanding the ESLint configuration
+| Committed at | Render duration |
+| ------------ | --------------- |
+| **Before optimization** |      |
+| 3.4s         | 27.2ms          |
+| 3.5s         | 24.8ms          |
+| **After optimization** |       |
+| 2s           | 3.4ms           |
+| 2.1s         | 2.4ms           |
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Before optimization:
+![Flame chart for sorting before optimization](src/assets/screenshots/image.png)
+![Ranked chart for sorting before optimization](src/assets/screenshots/image1.png)
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-});
-```
+After optimization:
+![Flame chart for sorting after optimization](src/assets/screenshots/image2.png)
+![Ranked chart for sorting after optimization](src/assets/screenshots/image3.png)
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Filtering
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x';
-import reactDom from 'eslint-plugin-react-dom';
+Recorded interaction: changing filtering from **default** to region **Americas**.
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-});
-```
+| Committed at | Render duration |
+| ------------ | --------------- |
+| **Before optimization** |      |
+| 3.2s         | 26.7ms          |
+| 3.3s         | 29.2ms          |
+| 3.3s         | 5.8ms           |
+| **After optimization** |       |
+| 3.4s         | 3.3ms           |
+| 3.5s         | 2.8ms           |
+| 3.5s         | 0.6ms           |
+
+Before optimization:
+![Flame chart for filtering before optimization](src/assets/screenshots/image4.png)
+![Ranked chart for filtering before optimization](src/assets/screenshots/image5.png)
+
+After optimization:
+![Flame chart for filtering after optimization](src/assets/screenshots/image6.png)
+![Ranked chart for filtering after optimization](src/assets/screenshots/image7.png)
+
+## Like/dislike
+
+Recorded interaction: changing liked state for one country **from dislike to like** and **back to dislike**.
+
+| Committed at | Render duration |
+| ------------ | --------------- |
+| **Before optimization** |      |
+| 1s           | 28.5ms          |
+| 1.9s         | 25.5ms          |
+| **After optimization** |       |
+| 1s           | 3.3ms           |
+| 1.8s         | 2.8ms           |
+
+Before optimization:
+![Flame chart for liking before optimization](src/assets/screenshots/image8.png)
+![Ranked chart for liking before optimization](src/assets/screenshots/image9.png)
+
+After optimization:
+![Flame chart for liking after optimization](src/assets/screenshots/image10.png)
+![Ranked chart for liking after optimization](src/assets/screenshots/image11.png)
