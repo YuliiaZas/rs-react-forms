@@ -4,12 +4,12 @@ import { memo, useMemo } from 'react';
 
 type CountryCardProps = {
   country: Country;
-  likedCountries: string[];
+  isLiked: boolean;
 };
 
 export const CountryCard = memo(function CountryCard({
   country,
-  likedCountries,
+  isLiked,
 }: CountryCardProps) {
   const details = useMemo(() => {
     console.log('getDetails', country);
@@ -20,16 +20,11 @@ export const CountryCard = memo(function CountryCard({
     ];
   }, [country]);
 
-  const isCountryLiked = useMemo(() => {
-    console.log('isCountryLiked', likedCountries.includes(country.name.common));
-    return likedCountries.includes(country.name.common);
-  }, [country.name.common, likedCountries]);
-
   return (
     <CardSmall
       cardTitle={country.name.common}
       listOfDetails={details}
-      isSelected={isCountryLiked}
+      isSelected={isLiked}
     />
   );
 });

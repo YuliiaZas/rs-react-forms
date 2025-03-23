@@ -20,9 +20,11 @@ export const CountryList = () => {
   const [filteredCountries, setFilteredCountries] = useState<Country[]>([]);
   const [sortedCountries, setSortedCountries] = useState<Country[]>([]);
 
-  const [likedCountries, setLikedCountries] = useLocalStorage<string[]>({
+  const [likedCountries, setLikedCountries] = useLocalStorage<
+    Record<string, boolean>
+  >({
     key: 'likedCountries',
-    defaultValue: [],
+    defaultValue: {},
   });
 
   const newFilteredCountries = useMemo(() => {
@@ -104,21 +106,15 @@ export const CountryList = () => {
   //   ];
   // }, []);
 
-  const getIsCountryLiked = useCallback(
-    (country: Country) => {
-      return likedCountries.includes(country.name.common);
-    },
-    [likedCountries]
-  );
-
   const handleCardClick = useCallback(
     (country: Country) => {
-      const newState = getIsCountryLiked(country)
-        ? likedCountries.filter((name) => name !== country.name.common)
-        : [...likedCountries, country.name.common];
+      const newState = {
+        ...likedCountries,
+        [country.name.common]: !likedCountries[country.name.common],
+      };
       setLikedCountries(newState);
     },
-    [getIsCountryLiked, likedCountries, setLikedCountries]
+    [likedCountries, setLikedCountries]
   );
 
   return (
@@ -131,7 +127,10 @@ export const CountryList = () => {
             key={country.name.common}
             onClick={() => handleCardClick(country)}
           >
-            <CountryCard country={country} likedCountries={likedCountries} />
+            <CountryCard
+              country={country}
+              isLiked={likedCountries[country.name.common]}
+            />
           </li>
         ))}
       </ul>
