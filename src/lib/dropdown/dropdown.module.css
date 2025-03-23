@@ -1,0 +1,17 @@
+.dropdown {
+  position: relative;
+}
+
+.box {
+  position: absolute;
+  text-align: start;
+  background-color: var(--secondary-bg);
+  margin-top: 0.5rem;
+  padding: 1rem;
+  min-width: 140px;
+  width: max-content;
+}
+
+.right {
+  right: 0;
+}
