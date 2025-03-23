@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useCallback, useState } from 'react';
 import './search.css';
 
 interface SearchProps {
@@ -14,10 +14,13 @@ export const Search: FC<SearchProps> = ({
 }) => {
   const [currentValue, setCurrentValue] = useState<string>(initialSearchValue);
 
-  const handleChange = (value: string) => {
-    setCurrentValue(value);
-    updateSearchValue(value);
-  };
+  const handleChange = useCallback(
+    (value: string) => {
+      setCurrentValue(value);
+      updateSearchValue(value);
+    },
+    [updateSearchValue]
+  );
 
   return (
     <div className="search-wrapper d-flex">
