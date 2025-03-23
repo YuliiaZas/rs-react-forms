@@ -12,7 +12,6 @@ export const CountryCard = memo(function CountryCard({
   isLiked,
 }: CountryCardProps) {
   const details = useMemo(() => {
-    console.log('getDetails', country);
     return [
       { key: 'Flag', value: country.flag },
       { key: 'Region', value: country.region },
