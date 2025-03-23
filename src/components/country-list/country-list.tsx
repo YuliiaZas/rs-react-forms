@@ -27,9 +27,11 @@ export const CountryList = () => {
   const [filteredCountries, setFilteredCountries] = useState<Country[]>([]);
   const [sortedCountries, setSortedCountries] = useState<Country[]>([]);
 
-  const [likedCountries, setLikedCountries] = useLocalStorage<string[]>({
+  const [likedCountries, setLikedCountries] = useLocalStorage<
+    Record<string, boolean>
+  >({
     key: 'likedCountries',
-    defaultValue: [],
+    defaultValue: {},
   });
 
   useEffect(() => {
@@ -75,14 +77,11 @@ export const CountryList = () => {
   };
 
   const handleCardClick = (country: Country) => {
-    const newState = getIsCountryLiked(country)
-      ? likedCountries.filter((name) => name !== country.name.common)
-      : [...likedCountries, country.name.common];
+    const newState = {
+      ...likedCountries,
+      [country.name.common]: !likedCountries[country.name.common],
+    };
     setLikedCountries(newState);
-  };
-
-  const getIsCountryLiked = (country: Country) => {
-    return likedCountries.includes(country.name.common);
   };
 
   return (
@@ -98,7 +97,7 @@ export const CountryList = () => {
             <CardSmall
               cardTitle={country.name.common}
               listOfDetails={getDetails(country)}
-              isSelected={getIsCountryLiked(country)}
+              isSelected={likedCountries[country.name.common]}
             />
           </li>
         ))}
